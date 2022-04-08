@@ -1,0 +1,80 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  farms     Farm[]
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     String[]
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Farm {
+  createdAt      DateTime        @default(now())
+  id             String          @id @default(cuid())
+  inventoryItems InventoryItem[]
+  owner          User?           @relation(fields: [ownerId], references: [id])
+  ownerId        String?
+  updatedAt      DateTime        @updatedAt
+}
+
+model InventoryItem {
+  createdAt DateTime @default(now())
+  farm      Farm?    @relation(fields: [farmId], references: [id])
+  farmId    String?
+  id        String   @id @default(cuid())
+  item      Item?    @relation(fields: [itemId], references: [id])
+  itemId    String?
+  quantity  Int?
+  updatedAt DateTime @updatedAt
+}
+
+model Item {
+  cashPrice     Float?
+  category      EnumItemCategory?
+  createdAt     DateTime          @default(now())
+  creditsPrice  Float?
+  displayName   String?
+  id            String            @id @default(cuid())
+  inventoryItem InventoryItem[]
+  plant         Plant
+  updatedAt     DateTime          @updatedAt
+}
+
+model Crop {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  isPlowed   Boolean?
+  nextGrowth DateTime?
+  plant      Plant?    @relation(fields: [plantId], references: [id])
+  plantId    String?
+  stage      Int?
+  updatedAt  DateTime  @updatedAt
+  wateredAt  DateTime?
+}
+
+model Plant {
+  actor       String?
+  createdAt   DateTime @default(now())
+  crops       Crop[]
+  growthSpeed Float?
+  id          String   @id @default(cuid())
+  items       Item?    @relation(fields: [itemsId], references: [id])
+  itemsId     String?
+  stages      Int?
+  updatedAt   DateTime @updatedAt
+}
+
+enum EnumItemCategory {
+  seed
+}
