@@ -1,0 +1,19 @@
+{
+  "dataServiceGeneratorVersion": "0.12.3",
+  "appInfo": {
+    "name": "Fazendoca",
+    "description": "",
+    "version": "otd88cp2",
+    "id": "cl1pmmmf848803601s6cqpdz2zj",
+    "url": "https://app.amplication.com/cl1pmmmf848803601s6cqpdz2zj",
+    "settings": {
+      "dbHost": "localhost",
+      "dbName": "",
+      "dbPassword": "admin",
+      "dbPort": 5432,
+      "dbUser": "admin",
+      "appId": "cl1pmmmf848803601s6cqpdz2zj",
+      "authProvider": "Jwt"
+    }
+  }
+}
