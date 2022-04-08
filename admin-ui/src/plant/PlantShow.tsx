@@ -12,6 +12,7 @@ import {
   BooleanField,
 } from "react-admin";
 
+import { FARM_TITLE_FIELD } from "../farm/FarmTitle";
 import { PLANT_TITLE_FIELD } from "./PlantTitle";
 import { ITEM_TITLE_FIELD } from "../item/ItemTitle";
 
@@ -31,6 +32,9 @@ export const PlantShow = (props: ShowProps): React.ReactElement => {
         <ReferenceManyField reference="Crop" target="PlantId" label="Crops">
           <Datagrid rowClick="show">
             <DateField source="createdAt" label="Created At" />
+            <ReferenceField label="Farm" source="farm.id" reference="Farm">
+              <TextField source={FARM_TITLE_FIELD} />
+            </ReferenceField>
             <TextField label="ID" source="id" />
             <BooleanField label="Is Plowed" source="isPlowed" />
             <TextField label="Next Growth" source="nextGrowth" />

@@ -25,6 +25,8 @@ import { DeleteFarmArgs } from "./DeleteFarmArgs";
 import { FarmFindManyArgs } from "./FarmFindManyArgs";
 import { FarmFindUniqueArgs } from "./FarmFindUniqueArgs";
 import { Farm } from "./Farm";
+import { CropFindManyArgs } from "../../crop/base/CropFindManyArgs";
+import { Crop } from "../../crop/base/Crop";
 import { InventoryItemFindManyArgs } from "../../inventoryItem/base/InventoryItemFindManyArgs";
 import { InventoryItem } from "../../inventoryItem/base/InventoryItem";
 import { User } from "../../user/base/User";
@@ -219,6 +221,32 @@ export class FarmResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Crop])
+  @nestAccessControl.UseRoles({
+    resource: "Farm",
+    action: "read",
+    possession: "any",
+  })
+  async crops(
+    @graphql.Parent() parent: Farm,
+    @graphql.Args() args: CropFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<Crop[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "Crop",
+    });
+    const results = await this.service.findCrops(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
   }
 
   @graphql.ResolveField(() => [InventoryItem])

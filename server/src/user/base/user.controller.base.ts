@@ -301,6 +301,7 @@ export class UserControllerBase {
       ...query,
       select: {
         createdAt: true,
+        displayName: true,
         id: true,
 
         owner: {

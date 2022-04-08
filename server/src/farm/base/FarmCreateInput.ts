@@ -11,12 +11,36 @@ https://docs.amplication.com/docs/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { InventoryItemCreateNestedManyWithoutFarmsInput } from "./InventoryItemCreateNestedManyWithoutFarmsInput";
-import { ValidateNested, IsOptional } from "class-validator";
+import { CropCreateNestedManyWithoutFarmsInput } from "./CropCreateNestedManyWithoutFarmsInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { InventoryItemCreateNestedManyWithoutFarmsInput } from "./InventoryItemCreateNestedManyWithoutFarmsInput";
 import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 @InputType()
 class FarmCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CropCreateNestedManyWithoutFarmsInput,
+  })
+  @ValidateNested()
+  @Type(() => CropCreateNestedManyWithoutFarmsInput)
+  @IsOptional()
+  @Field(() => CropCreateNestedManyWithoutFarmsInput, {
+    nullable: true,
+  })
+  crops?: CropCreateNestedManyWithoutFarmsInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  displayName?: string | null;
+
   @ApiProperty({
     required: false,
     type: () => InventoryItemCreateNestedManyWithoutFarmsInput,

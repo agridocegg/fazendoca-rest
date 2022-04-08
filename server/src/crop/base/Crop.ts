@@ -13,13 +13,14 @@ import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsDate,
+  ValidateNested,
+  IsOptional,
   IsString,
   IsBoolean,
-  IsOptional,
-  ValidateNested,
   IsInt,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { Farm } from "../../farm/base/Farm";
 import { Plant } from "../../plant/base/Plant";
 @ObjectType()
 class Crop {
@@ -30,6 +31,15 @@ class Crop {
   @Type(() => Date)
   @Field(() => Date)
   createdAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: () => Farm,
+  })
+  @ValidateNested()
+  @Type(() => Farm)
+  @IsOptional()
+  farm?: Farm | null;
 
   @ApiProperty({
     required: true,

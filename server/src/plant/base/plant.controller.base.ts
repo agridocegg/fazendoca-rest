@@ -347,6 +347,13 @@ export class PlantControllerBase {
       ...query,
       select: {
         createdAt: true,
+
+        farm: {
+          select: {
+            id: true,
+          },
+        },
+
         id: true,
         isPlowed: true,
         nextGrowth: true,

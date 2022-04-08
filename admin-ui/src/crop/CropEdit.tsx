@@ -4,19 +4,23 @@ import {
   Edit,
   SimpleForm,
   EditProps,
-  BooleanInput,
-  DateTimeInput,
   ReferenceInput,
   SelectInput,
+  BooleanInput,
+  DateTimeInput,
   NumberInput,
 } from "react-admin";
 
+import { FarmTitle } from "../farm/FarmTitle";
 import { PlantTitle } from "../plant/PlantTitle";
 
 export const CropEdit = (props: EditProps): React.ReactElement => {
   return (
     <Edit {...props}>
       <SimpleForm>
+        <ReferenceInput source="farm.id" reference="Farm" label="Farm">
+          <SelectInput optionText={FarmTitle} />
+        </ReferenceInput>
         <BooleanInput label="Is Plowed" source="isPlowed" />
         <DateTimeInput label="Next Growth" source="nextGrowth" />
         <ReferenceInput source="plant.id" reference="Plant" label="Plant">

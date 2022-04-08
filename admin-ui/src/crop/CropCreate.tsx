@@ -4,19 +4,23 @@ import {
   Create,
   SimpleForm,
   CreateProps,
-  BooleanInput,
-  DateTimeInput,
   ReferenceInput,
   SelectInput,
+  BooleanInput,
+  DateTimeInput,
   NumberInput,
 } from "react-admin";
 
+import { FarmTitle } from "../farm/FarmTitle";
 import { PlantTitle } from "../plant/PlantTitle";
 
 export const CropCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
       <SimpleForm>
+        <ReferenceInput source="farm.id" reference="Farm" label="Farm">
+          <SelectInput optionText={FarmTitle} />
+        </ReferenceInput>
         <BooleanInput label="Is Plowed" source="isPlowed" />
         <DateTimeInput label="Next Growth" source="nextGrowth" />
         <ReferenceInput source="plant.id" reference="Plant" label="Plant">

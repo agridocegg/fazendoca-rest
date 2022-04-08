@@ -11,12 +11,36 @@ https://docs.amplication.com/docs/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { InventoryItemUpdateManyWithoutFarmsInput } from "./InventoryItemUpdateManyWithoutFarmsInput";
-import { ValidateNested, IsOptional } from "class-validator";
+import { CropUpdateManyWithoutFarmsInput } from "./CropUpdateManyWithoutFarmsInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { InventoryItemUpdateManyWithoutFarmsInput } from "./InventoryItemUpdateManyWithoutFarmsInput";
 import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 @InputType()
 class FarmUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CropUpdateManyWithoutFarmsInput,
+  })
+  @ValidateNested()
+  @Type(() => CropUpdateManyWithoutFarmsInput)
+  @IsOptional()
+  @Field(() => CropUpdateManyWithoutFarmsInput, {
+    nullable: true,
+  })
+  crops?: CropUpdateManyWithoutFarmsInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  displayName?: string | null;
+
   @ApiProperty({
     required: false,
     type: () => InventoryItemUpdateManyWithoutFarmsInput,

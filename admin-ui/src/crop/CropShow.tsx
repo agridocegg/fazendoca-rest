@@ -5,11 +5,12 @@ import {
   SimpleShowLayout,
   ShowProps,
   DateField,
+  ReferenceField,
   TextField,
   BooleanField,
-  ReferenceField,
 } from "react-admin";
 
+import { FARM_TITLE_FIELD } from "../farm/FarmTitle";
 import { PLANT_TITLE_FIELD } from "../plant/PlantTitle";
 
 export const CropShow = (props: ShowProps): React.ReactElement => {
@@ -17,6 +18,9 @@ export const CropShow = (props: ShowProps): React.ReactElement => {
     <Show {...props}>
       <SimpleShowLayout>
         <DateField source="createdAt" label="Created At" />
+        <ReferenceField label="Farm" source="farm.id" reference="Farm">
+          <TextField source={FARM_TITLE_FIELD} />
+        </ReferenceField>
         <TextField label="ID" source="id" />
         <BooleanField label="Is Plowed" source="isPlowed" />
         <TextField label="Next Growth" source="nextGrowth" />
