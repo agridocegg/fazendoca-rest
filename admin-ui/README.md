@@ -1,4 +1,4 @@
-# Amplication
+# 👩‍🌾 Server
 
 This app was generated with Amplication.
 You can learn more in the [Amplication documentation](https://docs.amplication.com/guides/getting-started).

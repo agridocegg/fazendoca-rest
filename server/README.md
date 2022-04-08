@@ -1,4 +1,4 @@
-# Getting started with your app
+# 👩‍🌾 Server
 
 ## Available Scripts
 
