@@ -34,6 +34,15 @@ class CropOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  farmId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   id?: SortOrder;
 
   @ApiProperty({

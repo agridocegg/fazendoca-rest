@@ -25,6 +25,7 @@ import { DeleteCropArgs } from "./DeleteCropArgs";
 import { CropFindManyArgs } from "./CropFindManyArgs";
 import { CropFindUniqueArgs } from "./CropFindUniqueArgs";
 import { Crop } from "./Crop";
+import { Farm } from "../../farm/base/Farm";
 import { Plant } from "../../plant/base/Plant";
 import { CropService } from "../crop.service";
 
@@ -135,6 +136,12 @@ export class CropResolverBase {
       data: {
         ...args.data,
 
+        farm: args.data.farm
+          ? {
+              connect: args.data.farm,
+            }
+          : undefined,
+
         plant: args.data.plant
           ? {
               connect: args.data.plant,
@@ -182,6 +189,12 @@ export class CropResolverBase {
         data: {
           ...args.data,
 
+          farm: args.data.farm
+            ? {
+                connect: args.data.farm,
+              }
+            : undefined,
+
           plant: args.data.plant
             ? {
                 connect: args.data.plant,
@@ -217,6 +230,30 @@ export class CropResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => Farm, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "Crop",
+    action: "read",
+    possession: "any",
+  })
+  async farm(
+    @graphql.Parent() parent: Crop,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<Farm | null> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "Farm",
+    });
+    const result = await this.service.getFarm(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return permission.filter(result);
   }
 
   @graphql.ResolveField(() => Plant, { nullable: true })

@@ -11,17 +11,30 @@ https://docs.amplication.com/docs/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
+import { FarmWhereUniqueInput } from "../../farm/base/FarmWhereUniqueInput";
 import {
-  IsBoolean,
-  IsOptional,
-  IsDate,
   ValidateNested,
+  IsOptional,
+  IsBoolean,
+  IsDate,
   IsInt,
 } from "class-validator";
 import { Type } from "class-transformer";
 import { PlantWhereUniqueInput } from "../../plant/base/PlantWhereUniqueInput";
 @InputType()
 class CropCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => FarmWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => FarmWhereUniqueInput)
+  @IsOptional()
+  @Field(() => FarmWhereUniqueInput, {
+    nullable: true,
+  })
+  farm?: FarmWhereUniqueInput | null;
+
   @ApiProperty({
     required: false,
     type: Boolean,

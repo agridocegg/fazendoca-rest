@@ -27,6 +27,9 @@ import { FarmWhereUniqueInput } from "./FarmWhereUniqueInput";
 import { FarmFindManyArgs } from "./FarmFindManyArgs";
 import { FarmUpdateInput } from "./FarmUpdateInput";
 import { Farm } from "./Farm";
+import { CropFindManyArgs } from "../../crop/base/CropFindManyArgs";
+import { Crop } from "../../crop/base/Crop";
+import { CropWhereUniqueInput } from "../../crop/base/CropWhereUniqueInput";
 import { InventoryItemFindManyArgs } from "../../inventoryItem/base/InventoryItemFindManyArgs";
 import { InventoryItem } from "../../inventoryItem/base/InventoryItem";
 import { InventoryItemWhereUniqueInput } from "../../inventoryItem/base/InventoryItemWhereUniqueInput";
@@ -84,6 +87,7 @@ export class FarmControllerBase {
       },
       select: {
         createdAt: true,
+        displayName: true,
         id: true,
 
         owner: {
@@ -127,6 +131,7 @@ export class FarmControllerBase {
       ...args,
       select: {
         createdAt: true,
+        displayName: true,
         id: true,
 
         owner: {
@@ -169,6 +174,7 @@ export class FarmControllerBase {
       where: params,
       select: {
         createdAt: true,
+        displayName: true,
         id: true,
 
         owner: {
@@ -240,6 +246,7 @@ export class FarmControllerBase {
         },
         select: {
           createdAt: true,
+          displayName: true,
           id: true,
 
           owner: {
@@ -283,6 +290,7 @@ export class FarmControllerBase {
         where: params,
         select: {
           createdAt: true,
+          displayName: true,
           id: true,
 
           owner: {
@@ -302,6 +310,199 @@ export class FarmControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Get("/:id/crops")
+  @nestAccessControl.UseRoles({
+    resource: "Farm",
+    action: "read",
+    possession: "any",
+  })
+  @ApiNestedQuery(CropFindManyArgs)
+  async findManyCrops(
+    @common.Req() request: Request,
+    @common.Param() params: FarmWhereUniqueInput,
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<Crop[]> {
+    const query = plainToClass(CropFindManyArgs, request.query);
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "Crop",
+    });
+    const results = await this.service.findCrops(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+
+        farm: {
+          select: {
+            id: true,
+          },
+        },
+
+        id: true,
+        isPlowed: true,
+        nextGrowth: true,
+
+        plant: {
+          select: {
+            id: true,
+          },
+        },
+
+        stage: true,
+        updatedAt: true,
+        wateredAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results.map((result) => permission.filter(result));
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Post("/:id/crops")
+  @nestAccessControl.UseRoles({
+    resource: "Farm",
+    action: "update",
+    possession: "any",
+  })
+  async createCrops(
+    @common.Param() params: FarmWhereUniqueInput,
+    @common.Body() body: FarmWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      crops: {
+        connect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Farm",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Farm"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Patch("/:id/crops")
+  @nestAccessControl.UseRoles({
+    resource: "Farm",
+    action: "update",
+    possession: "any",
+  })
+  async updateCrops(
+    @common.Param() params: FarmWhereUniqueInput,
+    @common.Body() body: CropWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      crops: {
+        set: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Farm",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Farm"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Delete("/:id/crops")
+  @nestAccessControl.UseRoles({
+    resource: "Farm",
+    action: "update",
+    possession: "any",
+  })
+  async deleteCrops(
+    @common.Param() params: FarmWhereUniqueInput,
+    @common.Body() body: FarmWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      crops: {
+        disconnect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Farm",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Farm"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 
   @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))

@@ -10,7 +10,7 @@ https://docs.amplication.com/docs/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, Farm, InventoryItem, User } from "@prisma/client";
+import { Prisma, Farm, Crop, InventoryItem, User } from "@prisma/client";
 
 export class FarmServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -45,6 +45,17 @@ export class FarmServiceBase {
     args: Prisma.SelectSubset<T, Prisma.FarmDeleteArgs>
   ): Promise<Farm> {
     return this.prisma.farm.delete(args);
+  }
+
+  async findCrops(
+    parentId: string,
+    args: Prisma.CropFindManyArgs
+  ): Promise<Crop[]> {
+    return this.prisma.farm
+      .findUnique({
+        where: { id: parentId },
+      })
+      .crops(args);
   }
 
   async findInventoryItems(

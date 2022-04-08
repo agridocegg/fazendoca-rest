@@ -73,6 +73,12 @@ export class CropControllerBase {
       data: {
         ...data,
 
+        farm: data.farm
+          ? {
+              connect: data.farm,
+            }
+          : undefined,
+
         plant: data.plant
           ? {
               connect: data.plant,
@@ -81,6 +87,13 @@ export class CropControllerBase {
       },
       select: {
         createdAt: true,
+
+        farm: {
+          select: {
+            id: true,
+          },
+        },
+
         id: true,
         isPlowed: true,
         nextGrowth: true,
@@ -128,6 +141,13 @@ export class CropControllerBase {
       ...args,
       select: {
         createdAt: true,
+
+        farm: {
+          select: {
+            id: true,
+          },
+        },
+
         id: true,
         isPlowed: true,
         nextGrowth: true,
@@ -174,6 +194,13 @@ export class CropControllerBase {
       where: params,
       select: {
         createdAt: true,
+
+        farm: {
+          select: {
+            id: true,
+          },
+        },
+
         id: true,
         isPlowed: true,
         nextGrowth: true,
@@ -241,6 +268,12 @@ export class CropControllerBase {
         data: {
           ...data,
 
+          farm: data.farm
+            ? {
+                connect: data.farm,
+              }
+            : undefined,
+
           plant: data.plant
             ? {
                 connect: data.plant,
@@ -249,6 +282,13 @@ export class CropControllerBase {
         },
         select: {
           createdAt: true,
+
+          farm: {
+            select: {
+              id: true,
+            },
+          },
+
           id: true,
           isPlowed: true,
           nextGrowth: true,
@@ -296,6 +336,13 @@ export class CropControllerBase {
         where: params,
         select: {
           createdAt: true,
+
+          farm: {
+            select: {
+              id: true,
+            },
+          },
+
           id: true,
           isPlowed: true,
           nextGrowth: true,

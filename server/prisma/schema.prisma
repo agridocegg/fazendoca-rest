@@ -21,6 +21,8 @@ model User {
 
 model Farm {
   createdAt      DateTime        @default(now())
+  crops          Crop[]
+  displayName    String?
   id             String          @id @default(cuid())
   inventoryItems InventoryItem[]
   owner          User?           @relation(fields: [ownerId], references: [id])
@@ -53,6 +55,8 @@ model Item {
 
 model Crop {
   createdAt  DateTime  @default(now())
+  farm       Farm?     @relation(fields: [farmId], references: [id])
+  farmId     String?
   id         String    @id @default(cuid())
   isPlowed   Boolean?
   nextGrowth DateTime?
